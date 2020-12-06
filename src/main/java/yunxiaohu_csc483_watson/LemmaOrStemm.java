@@ -16,8 +16,8 @@ public class LemmaOrStemm {
 	}
 
 	public void convertStem(StringBuilder container, String line) {
-		for (String word : new Sentence(line.toLowerCase()).words()) {
-			container.append(getStem(word) + " ");
+		for (String ste : new Sentence(line.toLowerCase()).words()) {
+			container.append(getStem(ste) + " ");
 		}
 	}
 

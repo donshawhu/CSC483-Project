@@ -167,7 +167,7 @@ public class QueryEngine {
 //			System.out.println();
 			tokenStream.close();
 			analyzer.close();
-			return resultString.trim();
+			return resultString.toLowerCase().trim();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -27,6 +27,9 @@ public class CreateIndex {
 
 	}
 
+	/*
+	 * read a single file
+	 */
 	public void readFiles(String directory) throws IOException {
 		StandardAnalyzer analyzer = new StandardAnalyzer();
 		Directory index = FSDirectory.open(new File(indexPath).toPath());
@@ -36,7 +39,7 @@ public class CreateIndex {
 		File dir = new File(directory);
 		int i = 0;
 		for (String file : dir.list()) {
-			System.out.println("Processing document " + i + ": " + file);
+			System.out.println("Reading document " + i + ": " + file);
 			readFile(directory + "/" + file, w);
 			i++;
 		}
@@ -48,11 +51,18 @@ public class CreateIndex {
 		String title = "";
 		String result = "";
 		File file = new File(filename);
-
 		try {
 			Scanner inputScanner = new Scanner(file);
 			while (inputScanner.hasNextLine()) {
-				String lineString = inputScanner.nextLine();
+				String line = inputScanner.nextLine();
+
+				String lineString = "";
+
+				if (line.length() != 0) {
+					lineString = cleanTextContent(line);
+				} else {
+					lineString = line;
+				}
 				int length = lineString.length();
 
 				if (lineString.length() > 4 && lineString.substring(0, 2).equals("[[")
@@ -80,6 +90,7 @@ public class CreateIndex {
 				}
 
 				else {
+
 					result = result + lineString + " ";
 				}
 
@@ -92,15 +103,24 @@ public class CreateIndex {
 		}
 	}
 
+	private String cleanTextContent(String text) {
+		// strips off all non-English text characters
+		text = text.replaceAll("[^\\x00-\\x7F]", "");
+
+		return text.trim();
+	}
+
 	private void addDoc(IndexWriter w, String title, String text) {
 		// TODO Auto-generated method stub
 		Document doc = new Document();
 		StringBuilder txt = new StringBuilder("");
 		LemmaOrStemm convert = new LemmaOrStemm();
-		if (isLemma) {
+		if (isLemma && text.length() != 0) {
 			convert.convertLemma(txt, text);
-		} else if (isStem) {
+		} else if (isStem && text.length() != 0) {
 			convert.convertStem(txt, text);
+			System.out.println(text);
+			System.out.println("===================================================");
 		} else {
 
 			txt.append(text.toLowerCase());
