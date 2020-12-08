@@ -28,7 +28,7 @@ public class CreateIndex {
 	}
 
 	/*
-	 * read a single file
+	 * read files in directory, and index all files by using readFile() function
 	 */
 	public void readFiles(String directory) throws IOException {
 		StandardAnalyzer analyzer = new StandardAnalyzer();
@@ -37,7 +37,7 @@ public class CreateIndex {
 		IndexWriter w = new IndexWriter(index, config);
 
 		File dir = new File(directory);
-		int i = 0;
+		int i = 1;
 		for (String file : dir.list()) {
 			System.out.println("Reading document " + i + ": " + file);
 			readFile(directory + "/" + file, w);
@@ -47,6 +47,9 @@ public class CreateIndex {
 		index.close();
 	}
 
+	/*
+	 * Read a single file and index it
+	 */
 	public void readFile(String filename, IndexWriter w) {
 		String title = "";
 		String result = "";
@@ -54,6 +57,7 @@ public class CreateIndex {
 		try {
 			Scanner inputScanner = new Scanner(file);
 			while (inputScanner.hasNextLine()) {
+				System.out.println("Reading file " + filename);
 				String line = inputScanner.nextLine();
 
 				String lineString = "";
@@ -67,7 +71,7 @@ public class CreateIndex {
 
 				if (lineString.length() > 4 && lineString.substring(0, 2).equals("[[")
 						&& lineString.substring(length - 2, length).equals("]]")) {
-
+//					find the title and add the previous page to document
 					if (!title.equals("") && !title.contains("File:") && !title.contains("Image:")) {
 
 						addDoc(w, title, result.toString().trim());
@@ -78,7 +82,7 @@ public class CreateIndex {
 
 				else if (lineString.length() > 2 && lineString.charAt(0) == '='
 						&& lineString.charAt(length - 1) == '=') {
-					// remove all equal signs
+					// remove all equal signs in content
 					while (lineString.length() > 2 && lineString.charAt(0) == '='
 							&& lineString.charAt(lineString.length() - 1) == '=') {
 						lineString = lineString.substring(1, lineString.length() - 1);
@@ -103,13 +107,17 @@ public class CreateIndex {
 		}
 	}
 
+	// remove all non-English text characters
 	private String cleanTextContent(String text) {
-		// strips off all non-English text characters
 		text = text.replaceAll("[^\\x00-\\x7F]", "");
 
 		return text.trim();
 	}
 
+	/*
+	 * add one wiki page and index it, if needs lemma or stemming, it also can deal
+	 * with it
+	 */
 	private void addDoc(IndexWriter w, String title, String text) {
 		// TODO Auto-generated method stub
 		Document doc = new Document();
@@ -119,8 +127,6 @@ public class CreateIndex {
 			convert.convertLemma(txt, text);
 		} else if (isStem && text.length() != 0) {
 			convert.convertStem(txt, text);
-			System.out.println(text);
-			System.out.println("===================================================");
 		} else {
 
 			txt.append(text.toLowerCase());

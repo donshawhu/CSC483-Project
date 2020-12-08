@@ -31,9 +31,12 @@ public class QueryEngine {
 	private String indexPath;
 	private boolean isLemma;
 	private boolean isStem;
-	private boolean isWays;
+	private boolean isWays; // control if needs to change scoring
 	private Similarity ways;
 
+	/*
+	 * if we need to change scoring
+	 */
 	public QueryEngine(String indexPath, boolean isLemma, boolean isStem, Similarity ways) {
 		this.indexPath = indexPath;
 		this.isLemma = isLemma;
@@ -43,6 +46,9 @@ public class QueryEngine {
 
 	}
 
+	/*
+	 * Default scoring (BM25)
+	 */
 	public QueryEngine(String indexPath, boolean isLemma, boolean isStem) {
 		this.indexPath = indexPath;
 		this.isLemma = isLemma;
@@ -50,6 +56,9 @@ public class QueryEngine {
 		this.isWays = false;
 	}
 
+	/*
+	 * Read questions from file and use runQuery() to search and get the score
+	 */
 	public String runQueries(String filename) throws ParseException {
 		String result = "";
 		File file = new File(filename);
@@ -61,25 +70,27 @@ public class QueryEngine {
 			int total = 0, correct = 0, i = 0;
 			double mmr = 0;
 			while (scanner.hasNextLine()) {
-				if (i % 4 == 0)
+				if (i % 4 == 0) // first line category
 					category = scanner.nextLine();
-				else if (i % 4 == 1)
+				else if (i % 4 == 1) // second line clue
 					clue = scanner.nextLine();
-				else if (i % 4 == 2)
+				else if (i % 4 == 2) // third line answer
 					answer = scanner.nextLine();
-				else {
+				else { // empty line need to use clue and category to do a search
 					scanner.nextLine();
-					List<ResultClass> ans = runQuery(category + " " + clue);
+					List<ResultClass> ans = runQuery(category.toLowerCase() + " " + clue.toLowerCase());
 					if (ans.get(0).DocName.get("title").equals(answer)) {
 						correct++;
 						mmr += 1.0;
-//						System.out.println("find: " + ans.get(0).DocName.get("title") + "\tanswer: " + answer);
+//						System.out.println(
+//								"Position 0 find: " + ans.get(0).DocName.get("title") + "     answer: " + answer);
 					} else {
 						for (int j = 0; j < ans.size(); j++) {
 							if (ans.get(j).DocName.get("title").equals(answer)) {
 								mmr += (double) 1 / (j + 1);
-//								System.out
-//										.println("find: " + ans.get(0).DocName.get("title") + "    answer: " + answer);
+								System.out.println(
+										"Hit List Position " + (j + 1) + " find: " + ans.get(j).DocName.get("title")
+												+ "    answer: " + answer + " (influence MMR score)");
 								break;
 							}
 						}
@@ -88,15 +99,18 @@ public class QueryEngine {
 				}
 				i++;
 			}
-			System.out.println(correct + " " + total);
 			result = "\tP@1: " + correct + "/" + total + " = " + (double) correct / total + "\n\tMMR: "
-					+ (double) mmr / total;
+					+ (double) (mmr / total);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
 
+	/*
+	 * do a search and get top 10 hits. add top 10 hits in to a list then return the
+	 * list
+	 */
 	public List<ResultClass> runQuery(String query) throws ParseException {
 		List<ResultClass> ans = new ArrayList<ResultClass>();
 
@@ -112,7 +126,6 @@ public class QueryEngine {
 			clue = removeStopWords(container.toString());
 		}
 		clue = removeStopWords(query);
-//		System.out.println(1 + clue);
 
 		try {
 			Directory index = FSDirectory.open(new File(indexPath).toPath());
@@ -122,6 +135,7 @@ public class QueryEngine {
 			int hitsPerPage = 10;
 			IndexReader reader = DirectoryReader.open(index);
 			IndexSearcher searcher = new IndexSearcher(reader);
+//			if needs to change the way of similarity
 			if (isWays) {
 
 				searcher.setSimilarity(this.ways);
@@ -150,6 +164,9 @@ public class QueryEngine {
 		return ans;
 	}
 
+	/*
+	 * remove the stopword in query
+	 */
 	public String removeStopWords(String text) {
 		CharArraySet stopWords = EnglishAnalyzer.getDefaultStopSet();
 		Analyzer analyzer = new StandardAnalyzer(stopWords);
@@ -160,14 +177,13 @@ public class QueryEngine {
 			tokenStream.reset();
 
 			while (tokenStream.incrementToken()) {
-//				System.out.print("[" + term.toString() + "] ");
 				resultString = resultString + term.toString() + " ";
 
 			}
 //			System.out.println();
 			tokenStream.close();
 			analyzer.close();
-			return resultString.toLowerCase().trim();
+			return resultString.trim();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
