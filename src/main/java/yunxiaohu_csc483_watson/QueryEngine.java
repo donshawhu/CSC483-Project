@@ -86,8 +86,8 @@ public class QueryEngine {
 					if (ans.get(0).DocName.get("title").equals(answer)) {
 						correct++;
 						mmr += 1.0;
-						System.out.println(
-								"Position 0 find: " + ans.get(0).DocName.get("title") + "     answer: " + answer);
+//						System.out.println(
+//								"Position 0 find: " + ans.get(0).DocName.get("title") + "     answer: " + answer);
 					} else {
 						for (int j = 0; j < ans.size(); j++) {
 							if (ans.get(j).DocName.get("title").equals(answer)) {
