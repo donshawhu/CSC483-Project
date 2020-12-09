@@ -57,7 +57,7 @@ public class CreateIndex {
 		try {
 			Scanner inputScanner = new Scanner(file);
 			while (inputScanner.hasNextLine()) {
-				System.out.println("Reading file " + filename);
+//				System.out.println("Reading file " + filename);
 				String line = inputScanner.nextLine();
 
 				String lineString = "";

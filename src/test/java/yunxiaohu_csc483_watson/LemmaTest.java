@@ -3,6 +3,8 @@ package yunxiaohu_csc483_watson;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
+import org.apache.lucene.search.similarities.MultiSimilarity;
+import org.apache.lucene.search.similarities.Similarity;
 import org.junit.jupiter.api.Test;
 
 public class LemmaTest {
@@ -18,6 +20,8 @@ public class LemmaTest {
 		QueryEngine qeDe = new QueryEngine(indexPath, isLemma, isStem);
 		QueryEngine qeTFIDF = new QueryEngine(indexPath, isLemma, isStem, new ClassicSimilarity());
 		QueryEngine qeBool = new QueryEngine(indexPath, isLemma, isStem, new BooleanSimilarity());
+		Similarity[] ls = { new ClassicSimilarity(), new BooleanSimilarity() };
+		QueryEngine qeMu = new QueryEngine(indexPath, isLemma, isStem, new MultiSimilarity(ls));
 
 		System.out.println("===============================================================");
 		System.out.println("Running similarity Default(BM25).");
@@ -35,6 +39,12 @@ public class LemmaTest {
 		System.out.println("Running similarity Bool.");
 		String bool = qeBool.runQueries(queries);
 		System.out.println("Using the Bool Model:\n" + bool);
+		System.out.println();
+
+		System.out.println("===============================================================");
+		System.out.println("Running similarity MultiSimilarity.");
+		String mu = qeMu.runQueries(queries);
+		System.out.println("Using the MultiSimilarity:\n" + mu);
 		System.out.println();
 	}
 }

@@ -2,11 +2,13 @@ package yunxiaohu_csc483_watson;
 
 import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
+import org.apache.lucene.search.similarities.MultiSimilarity;
+import org.apache.lucene.search.similarities.Similarity;
 
 public class Index {
 
 	static String queries = "questions.txt";
-	static String indexPath = "./index/haveLemmaNoStemm";
+	static String indexPath = "./index/test";
 	static String input_dir = "wiki-subset-20140602";
 //	static String input_dir = "example";
 
@@ -14,8 +16,8 @@ public class Index {
 	static boolean isStem = false;
 //	isLemma and isStem cannot both be true
 
-	static boolean isCreateIndex = false;
-	static boolean isRunQueries = true;
+	static boolean isCreateIndex = true;
+	static boolean isRunQueries = false;
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
@@ -24,9 +26,11 @@ public class Index {
 			create.readFiles(input_dir);
 		}
 		if (isRunQueries) {
+			Similarity[] ls = { new ClassicSimilarity(), new BooleanSimilarity() };
 			QueryEngine qeDe = new QueryEngine(indexPath, isLemma, isStem);
 			QueryEngine qeTFIDF = new QueryEngine(indexPath, isLemma, isStem, new ClassicSimilarity());
 			QueryEngine qeBool = new QueryEngine(indexPath, isLemma, isStem, new BooleanSimilarity());
+			QueryEngine qeMu = new QueryEngine(indexPath, isLemma, isStem, new MultiSimilarity(ls));
 
 			System.out.println("Running similarity Default(BM25).");
 			String de = qeDe.runQueries(queries);
@@ -41,6 +45,11 @@ public class Index {
 			System.out.println("Running similarity Bool.");
 			String bool = qeBool.runQueries(queries);
 			System.out.println("Using the Bool Model:\n" + bool);
+			System.out.println();
+
+			System.out.println("Running similarity MultiSimilarity.");
+			String mu = qeMu.runQueries(queries);
+			System.out.println("Using the MultiSimilarity:\n" + mu);
 			System.out.println();
 		}
 	}
