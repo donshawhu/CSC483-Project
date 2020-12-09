@@ -3,6 +3,7 @@ package yunxiaohu_csc483_watson;
 /*
  * Yunxiao Hu 
  * CSC483
+ * Create the Index
  */
 import java.io.File;
 import java.io.FileNotFoundException;

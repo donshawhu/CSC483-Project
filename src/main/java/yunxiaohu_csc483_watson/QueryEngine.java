@@ -184,7 +184,6 @@ public class QueryEngine {
 				resultString = resultString + term.toString() + " ";
 
 			}
-//			System.out.println();
 			tokenStream.close();
 			analyzer.close();
 			return resultString.trim();

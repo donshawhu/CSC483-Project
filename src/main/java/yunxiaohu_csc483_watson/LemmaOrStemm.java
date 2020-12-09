@@ -3,6 +3,7 @@ package yunxiaohu_csc483_watson;
 /*
  * Yunxiao Hu 
  * CSC483
+ * Support class
  */
 import org.tartarus.snowball.ext.PorterStemmer;
 

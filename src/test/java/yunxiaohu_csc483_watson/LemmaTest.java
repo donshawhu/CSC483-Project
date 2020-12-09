@@ -11,6 +11,9 @@ import org.apache.lucene.search.similarities.MultiSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.junit.jupiter.api.Test;
 
+/*
+ * get the best configuration output
+ */
 public class LemmaTest {
 
 	static String queries = "questions.txt";

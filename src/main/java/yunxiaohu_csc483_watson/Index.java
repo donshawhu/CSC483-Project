@@ -20,6 +20,7 @@ public class Index {
 	static boolean isStem = false;
 //	isLemma and isStem cannot both be true
 
+//	run which part
 	static boolean isCreateIndex = false;
 	static boolean isRunQueries = true;
 
