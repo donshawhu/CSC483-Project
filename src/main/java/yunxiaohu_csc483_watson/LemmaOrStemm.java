@@ -1,5 +1,9 @@
 package yunxiaohu_csc483_watson;
 
+/*
+ * Yunxiao Hu 
+ * CSC483
+ */
 import org.tartarus.snowball.ext.PorterStemmer;
 
 import edu.stanford.nlp.simple.Sentence;

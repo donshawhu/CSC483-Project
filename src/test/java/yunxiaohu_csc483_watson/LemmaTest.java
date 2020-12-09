@@ -1,5 +1,9 @@
 package yunxiaohu_csc483_watson;
 
+/*
+ * Yunxiao Hu 
+ * CSC483
+ */
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;

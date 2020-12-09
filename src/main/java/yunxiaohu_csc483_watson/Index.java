@@ -1,5 +1,9 @@
 package yunxiaohu_csc483_watson;
 
+/*
+ * Yunxiao Hu
+ * CSC483
+ */
 import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.search.similarities.MultiSimilarity;
@@ -8,7 +12,7 @@ import org.apache.lucene.search.similarities.Similarity;
 public class Index {
 
 	static String queries = "questions.txt";
-	static String indexPath = "./index/test";
+	static String indexPath = "./index/haveLemmaNoStemm";
 	static String input_dir = "wiki-subset-20140602";
 //	static String input_dir = "example";
 
@@ -16,8 +20,8 @@ public class Index {
 	static boolean isStem = false;
 //	isLemma and isStem cannot both be true
 
-	static boolean isCreateIndex = true;
-	static boolean isRunQueries = false;
+	static boolean isCreateIndex = false;
+	static boolean isRunQueries = true;
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
